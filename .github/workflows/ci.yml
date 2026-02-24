@@ -28,9 +28,13 @@ jobs:
 
       - name: Install backend dependencies
         run: npm install
-      # Syntax check to block broken commits
+        # 1️ Syntax check (catches broken JavaScript)
       - name: Syntax check
-        run: npm run check
+        run: node --check server.js
+
+      # 2️ Runtime check (catches undefined variables, crashes, etc.)
+      - name: Runtime check
+        run: node server.js
 
       - name: Backend build check
         run: npm run build || echo "No backend build step"
