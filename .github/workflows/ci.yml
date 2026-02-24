@@ -63,9 +63,6 @@ jobs:
   #     - name: Frontend tests
   #       run: npm test || echo "No frontend tests"
 
-  # -------------------------
-  # DEPLOYMENT (ONLY BACKEND)
-  # -------------------------
   deploy:
     name: Deploy Backend to Render
     needs: [backend] # frontend removed
