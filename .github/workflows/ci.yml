@@ -36,44 +36,45 @@ jobs:
         run: npm test || echo "No backend tests"
 
   # -------------------------
-  # FRONTEND CI
+  # FRONTEND CI (DISABLED)
   # -------------------------
-  frontend:
-    name: Frontend CI
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install frontend dependencies
-        run: npm install
-
-      - name: Build frontend
-        run: npm run build
-
-      - name: Frontend tests
-        run: npm test || echo "No frontend tests"
+  # frontend:
+  #   name: Frontend CI
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: frontend
+  #
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v3
+  #
+  #     - name: Setup Node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 18
+  #
+  #     - name: Install frontend dependencies
+  #       run: npm install
+  #
+  #     - name: Build frontend
+  #       run: npm run build
+  #
+  #     - name: Frontend tests
+  #       run: npm test || echo "No frontend tests"
 
   # -------------------------
-  # DEPLOYMENT (CD)
+  # DEPLOYMENT (ONLY BACKEND)
   # -------------------------
   deploy:
-    name: Deploy to Render & Vercel
-    needs: [backend, frontend]
+    name: Deploy Backend to Render
+    needs: [backend] # frontend removed
     runs-on: ubuntu-latest
 
     steps:
       - name: Deploy backend to Render
         run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
 
-      - name: Deploy frontend to Vercel
-        run: curl -X POST ${{ secrets.VERCEL_DEPLOY_HOOK }}
+      # Frontend deploy disabled
+      # - name: Deploy frontend to Vercel
+      #   run: curl -X POST ${{ secrets.VERCEL_DEPLOY_HOOK }}
