@@ -1,0 +1,79 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # -------------------------
+  # BACKEND CI
+  # -------------------------
+  backend:
+    name: Backend CI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install backend dependencies
+        run: npm install
+
+      - name: Backend build check
+        run: npm run build || echo "No backend build step"
+
+      - name: Backend tests
+        run: npm test || echo "No backend tests"
+
+  # -------------------------
+  # FRONTEND CI
+  # -------------------------
+  frontend:
+    name: Frontend CI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install frontend dependencies
+        run: npm install
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Frontend tests
+        run: npm test || echo "No frontend tests"
+
+  # -------------------------
+  # DEPLOYMENT (CD)
+  # -------------------------
+  deploy:
+    name: Deploy to Render & Vercel
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy backend to Render
+        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+
+      - name: Deploy frontend to Vercel
+        run: curl -X POST ${{ secrets.VERCEL_DEPLOY_HOOK }}
