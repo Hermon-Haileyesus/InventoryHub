@@ -28,6 +28,9 @@ jobs:
 
       - name: Install backend dependencies
         run: npm install
+      # Syntax check to block broken commits
+      - name: Syntax check
+        run: npm run check
 
       - name: Backend build check
         run: npm run build || echo "No backend build step"
