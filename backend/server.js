@@ -79,6 +79,7 @@ app.post("/products", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+THIS_IS_NOT_VALID_CODE;
 
 // ----------------------
 // UPDATE product
