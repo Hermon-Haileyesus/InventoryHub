@@ -80,36 +80,57 @@ export default function InventoryTable({
 
       {/* Mobile Cards */}
       <div className="grid gap-3 md:hidden">
-        {products.map((product) => (
-          <div
-            key={product.id}
-            className="rounded-lg border bg-white p-4 space-y-3"
-          >
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="font-medium">{product.name}</p>
-                <p className="text-sm text-gray-500">{product.category}</p>
+        {products.map((product) => {
+          const status =
+            product.stock === 0
+              ? "Out of Stock"
+              : product.stock < 10
+                ? "Low Stock"
+                : "In Stock";
+
+          const statusColor =
+            product.stock === 0
+              ? "bg-red-100 text-red-700"
+              : product.stock < 10
+                ? "bg-yellow-100 text-yellow-700"
+                : "bg-green-100 text-green-700";
+
+          return (
+            <div
+              key={product.id}
+              className="rounded-lg border bg-white p-4 space-y-3"
+            >
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="font-medium">{product.name}</p>
+                  <p className="text-sm text-gray-500">{product.category}</p>
+                </div>
+
+                <DropdownMenu
+                  onEdit={() => onEdit(product)}
+                  onDelete={() => onDelete(product.id)}
+                />
               </div>
 
-              <DropdownMenu
-                onEdit={() => onEdit(product)}
-                onDelete={() => onDelete(product.id)}
-              />
-            </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="font-mono text-gray-500">{product.sku}</span>
 
-            <div className="flex items-center justify-between text-sm">
-              <span className="font-mono text-gray-500">{product.sku}</span>
-              <span className="text-xs px-2 py-1 rounded bg-gray-100">
-                {product.stock} in stock
-              </span>
-            </div>
+                <span
+                  className={`px-2 py-1 rounded text-xs font-medium ${statusColor}`}
+                >
+                  {status}
+                </span>
+              </div>
 
-            <div className="flex items-center justify-between text-sm border-t pt-3">
-              <span className="text-gray-500">Price:</span>
-              <span className="font-medium">${product.price.toFixed(2)}</span>
+              <div className="flex items-center justify-between text-sm border-t pt-3">
+                <span className="text-gray-500">Price:</span>
+                <span className="font-medium">
+                  ${Number(product.price).toFixed(2)}
+                </span>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </>
   );
