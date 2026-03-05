@@ -21,7 +21,14 @@ export default function InventoryPage() {
       try {
         const res = await fetch(`${apiUrl}/products`);
         const data = await res.json();
-        dispatch({ type: "SET_PRODUCTS", payload: data });
+
+        const normalized = data.map((p: any) => ({
+          ...p,
+          price: Number(p.price),
+          stock: Number(p.stock),
+        }));
+
+        dispatch({ type: "SET_PRODUCTS", payload: normalized });
       } catch {
         dispatch({ type: "SET_ERROR", payload: "Failed to load products" });
       } finally {
