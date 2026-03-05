@@ -20,13 +20,21 @@ export function inventoryReducer(state: State, action: Action): State {
       return { ...state, products: action.payload };
     case "ADD_PRODUCT":
       return { ...state, products: [action.payload, ...state.products] };
+
     case "EDIT_PRODUCT":
+      const updated = {
+        ...action.payload,
+        price: Number(action.payload.price),
+        stock: Number(action.payload.stock),
+      };
+
       return {
         ...state,
         products: state.products.map((p) =>
-          p.id === action.payload.id ? action.payload : p,
+          p.id === updated.id ? updated : p,
         ),
       };
+
     case "DELETE_PRODUCT":
       return {
         ...state,
