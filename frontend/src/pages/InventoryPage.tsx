@@ -3,10 +3,12 @@ import InventoryTable from "../components/InventoryTable";
 import { inventoryReducer } from "../state/inventoryReducer";
 import EditProductDialog from "../components/EditProdudctionDialog";
 import type { Product } from "../types/Products";
+import DeleteProductDialog from "../components/DeleteProductionDialog";
 
 export default function InventoryPage() {
   const [search, setSearch] = useState("");
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const initialState = {
     products: [],
@@ -69,8 +71,18 @@ export default function InventoryPage() {
         <InventoryTable
           products={filtered}
           onEdit={(p) => setEditingProduct(p)}
-          onDelete={(id) => dispatch({ type: "DELETE_PRODUCT", payload: id })}
+          onDelete={(id) => setDeletingId(id)}
         />
+        <DeleteProductDialog
+          productId={deletingId}
+          onClose={() => setDeletingId(null)}
+          onConfirm={async (id) => {
+            await fetch(`${apiUrl}/products/${id}`, { method: "DELETE" });
+            dispatch({ type: "DELETE_PRODUCT", payload: id });
+            setDeletingId(null);
+          }}
+        />
+
         {editingProduct && (
           <EditProductDialog
             product={editingProduct}
