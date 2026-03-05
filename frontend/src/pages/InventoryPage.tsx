@@ -4,11 +4,13 @@ import { inventoryReducer } from "../state/inventoryReducer";
 import EditProductDialog from "../components/EditProdudctionDialog";
 import type { Product } from "../types/Products";
 import DeleteProductDialog from "../components/DeleteProductionDialog";
+import AddProductDialog from "../components/AddProductionDialog";
 
 export default function InventoryPage() {
   const [search, setSearch] = useState("");
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [adding, setAdding] = useState(false);
 
   const initialState = {
     products: [],
@@ -59,6 +61,10 @@ export default function InventoryPage() {
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-3xl font-bold mb-4">Inventory</h1>
+        <p className="text-sm text-muted-foreground">
+          {state.products.length} products ·{" "}
+          {state.products.filter((p) => p.stock > 10).length} in stock
+        </p>
 
         <input
           type="text"
@@ -67,6 +73,12 @@ export default function InventoryPage() {
           onChange={(e) => setSearch(e.target.value)}
           className="w-full max-w-sm mb-6 px-3 py-2 border rounded"
         />
+        <button
+          onClick={() => setAdding(true)}
+          className="mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+        >
+          Add New Product
+        </button>
 
         <InventoryTable
           products={filtered}
@@ -90,6 +102,32 @@ export default function InventoryPage() {
             onSave={(updated) => {
               dispatch({ type: "EDIT_PRODUCT", payload: updated });
               setEditingProduct(null);
+            }}
+          />
+        )}
+        {adding && (
+          <AddProductDialog
+            onClose={() => setAdding(false)}
+            onSave={async (form) => {
+              const res = await fetch(`${apiUrl}/products`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(form),
+              });
+
+              const result = await res.json();
+
+              const newProduct = {
+                id: result.id,
+                name: form.name,
+                category: form.category,
+                sku: form.sku,
+                price: Number(form.price),
+                stock: Number(form.stock),
+              };
+
+              dispatch({ type: "ADD_PRODUCT", payload: newProduct });
+              setAdding(false);
             }}
           />
         )}
