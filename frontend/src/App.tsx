@@ -1,11 +1,12 @@
 import "./App.css";
 import InventoryPage from "./pages/InventoryPage";
+import { Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <>
-      <InventoryPage />
-    </>
+    <Routes>
+      <Route path="/" element={<InventoryPage />} />
+    </Routes>
   );
 }
 
