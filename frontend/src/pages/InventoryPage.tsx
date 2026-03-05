@@ -1,10 +1,12 @@
 import { useReducer, useEffect, useState, useMemo } from "react";
-
 import InventoryTable from "../components/InventoryTable";
 import { inventoryReducer } from "../state/inventoryReducer";
+import EditProductDialog from "../components/EditProdudctionDialog";
+import type { Product } from "../types/Products";
 
 export default function InventoryPage() {
   const [search, setSearch] = useState("");
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   const initialState = {
     products: [],
@@ -66,9 +68,19 @@ export default function InventoryPage() {
 
         <InventoryTable
           products={filtered}
-          onEdit={(p) => dispatch({ type: "EDIT_PRODUCT", payload: p })}
+          onEdit={(p) => setEditingProduct(p)}
           onDelete={(id) => dispatch({ type: "DELETE_PRODUCT", payload: id })}
         />
+        {editingProduct && (
+          <EditProductDialog
+            product={editingProduct}
+            onClose={() => setEditingProduct(null)}
+            onSave={(updated) => {
+              dispatch({ type: "EDIT_PRODUCT", payload: updated });
+              setEditingProduct(null);
+            }}
+          />
+        )}
       </div>
     </div>
   );
