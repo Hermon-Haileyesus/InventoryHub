@@ -1,5 +1,5 @@
 import { useReducer, useEffect, useState, useMemo } from "react";
-import type { Product } from "../types/Products";
+
 import InventoryTable from "../components/InventoryTable";
 import { inventoryReducer } from "../state/inventoryReducer";
 
