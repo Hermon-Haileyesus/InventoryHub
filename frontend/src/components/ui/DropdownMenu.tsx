@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 
 interface DropdownMenuProps {
   onEdit: () => void;
@@ -26,9 +27,7 @@ export default function DropdownMenu({ onEdit, onDelete }: DropdownMenuProps) {
     const rect = ref.current.getBoundingClientRect();
     const spaceBelow = window.innerHeight - rect.bottom;
 
-    // If less than 150px below → open upward
     setOpenUp(spaceBelow < 150);
-
     setOpen(!open);
   }
 
@@ -38,13 +37,13 @@ export default function DropdownMenu({ onEdit, onDelete }: DropdownMenuProps) {
         onClick={toggleMenu}
         className="px-2 py-1 rounded hover:bg-gray-200"
       >
-        ⋮
+        <MoreHorizontal className="h-4 w-4" />
       </button>
 
       {open && (
         <div
-          className={`absolute w-28 bg-white border rounded shadow z-10
-            ${openUp ? "bottom-full mb-2" : "top-full mt-2"} 
+          className={`absolute w-32 bg-white border rounded shadow z-10
+            ${openUp ? "bottom-full mb-2" : "top-full mt-2"}
             right-0
           `}
         >
@@ -53,9 +52,10 @@ export default function DropdownMenu({ onEdit, onDelete }: DropdownMenuProps) {
               setOpen(false);
               onEdit();
             }}
-            className="block w-full text-left px-3 py-2 hover:bg-gray-100"
+            className="flex items-center gap-2 w-full text-left px-3 py-2 hover:bg-gray-100 rounded"
           >
-            Edit
+            <Pencil size={16} />
+            <span>Edit</span>
           </button>
 
           <button
@@ -63,9 +63,10 @@ export default function DropdownMenu({ onEdit, onDelete }: DropdownMenuProps) {
               setOpen(false);
               onDelete();
             }}
-            className="block w-full text-left px-3 py-2 text-red-600 hover:bg-red-50"
+            className="flex items-center gap-2 w-full text-left px-3 py-2 text-red-600 hover:bg-red-50 rounded"
           >
-            Delete
+            <Trash2 size={16} />
+            <span>Delete</span>
           </button>
         </div>
       )}
