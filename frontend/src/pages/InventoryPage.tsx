@@ -71,8 +71,8 @@ export default function InventoryPage() {
           {state.products.filter((p) => p.stock > 10).length} in stock
         </p>
 
-        <div className="flex items-center justify-between mb-6">
-          <div className="relative w-full max-w-sm">
+        <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between mb-6 gap-3">
+          <div className="relative w-full sm:max-w-sm order-2 sm:order-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
@@ -85,7 +85,7 @@ export default function InventoryPage() {
 
           <button
             onClick={() => setAdding(true)}
-            className="ml-4 flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+            className="order-1 sm:order-2 w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
           >
             <Plus className="h-4 w-4" />
             Add Product
