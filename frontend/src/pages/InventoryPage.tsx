@@ -25,6 +25,8 @@ export default function InventoryPage() {
 
   useEffect(() => {
     async function load() {
+      const start = Date.now();
+
       try {
         const res = await fetch(`${apiUrl}/products`);
         const data = await res.json();
@@ -39,9 +41,19 @@ export default function InventoryPage() {
       } catch {
         dispatch({ type: "SET_ERROR", payload: "Failed to load products" });
       } finally {
-        dispatch({ type: "SET_LOADING", payload: false });
+        const elapsed = Date.now() - start;
+        const minTime = 2000; // 2 seconds
+
+        if (elapsed < minTime) {
+          setTimeout(() => {
+            dispatch({ type: "SET_LOADING", payload: false });
+          }, minTime - elapsed);
+        } else {
+          dispatch({ type: "SET_LOADING", payload: false });
+        }
       }
     }
+
     load();
   }, [apiUrl]);
 
@@ -54,16 +66,6 @@ export default function InventoryPage() {
         p.category.toLowerCase().includes(q),
     );
   }, [state.products, search]);
-  if (state.loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3 text-gray-600">
-          <div className="h-8 w-8 border-4 border-gray-300 border-t-green-600 rounded-full animate-spin"></div>
-          <p className="text-sm font-medium">Loading inventory…</p>
-        </div>
-      </div>
-    );
-  }
 
   if (state.loading) {
     return (
@@ -79,7 +81,16 @@ export default function InventoryPage() {
       </div>
     );
   }
-
+  if (state.error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg shadow-sm max-w-md text-center">
+          <p className="font-semibold text-lg mb-1">Something went wrong</p>
+          <p className="text-sm">{state.error}</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-5xl mx-auto">
