@@ -15,6 +15,14 @@ export default function AddProductDialog({ onClose, onSave }: Props) {
     stock: 0,
   });
 
+  // Validation: all fields must be filled
+  const isValid =
+    form.name.trim() !== "" &&
+    form.category.trim() !== "" &&
+    form.sku.trim() !== "" &&
+    form.price !== null &&
+    form.stock !== null;
+
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
@@ -24,7 +32,9 @@ export default function AddProductDialog({ onClose, onSave }: Props) {
           <div>
             <label className="block text-sm font-medium">Product Name</label>
             <input
-              className="w-full border rounded px-3 py-2"
+              className={`w-full border rounded px-3 py-2 ${
+                form.name.trim() === "" ? "border-red-500" : ""
+              }`}
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
             />
@@ -33,7 +43,9 @@ export default function AddProductDialog({ onClose, onSave }: Props) {
           <div>
             <label className="block text-sm font-medium">Category</label>
             <select
-              className="w-full border rounded px-3 py-2 bg-white"
+              className={`w-full border rounded px-3 py-2 bg-white ${
+                form.category.trim() === "" ? "border-red-500" : ""
+              }`}
               value={form.category}
               onChange={(e) => setForm({ ...form, category: e.target.value })}
             >
@@ -49,7 +61,9 @@ export default function AddProductDialog({ onClose, onSave }: Props) {
           <div>
             <label className="block text-sm font-medium">SKU</label>
             <input
-              className="w-full border rounded px-3 py-2"
+              className={`w-full border rounded px-3 py-2 ${
+                form.sku.trim() === "" ? "border-red-500" : ""
+              }`}
               value={form.sku}
               onChange={(e) => setForm({ ...form, sku: e.target.value })}
             />
@@ -59,7 +73,9 @@ export default function AddProductDialog({ onClose, onSave }: Props) {
             <label className="block text-sm font-medium">Price ($)</label>
             <input
               type="number"
-              className="w-full border rounded px-3 py-2"
+              className={`w-full border rounded px-3 py-2 ${
+                form.price === null ? "border-red-500" : ""
+              }`}
               value={form.price}
               onChange={(e) =>
                 setForm({ ...form, price: Number(e.target.value) })
@@ -71,7 +87,9 @@ export default function AddProductDialog({ onClose, onSave }: Props) {
             <label className="block text-sm font-medium">Stock</label>
             <input
               type="number"
-              className="w-full border rounded px-3 py-2"
+              className={`w-full border rounded px-3 py-2 ${
+                form.stock === null ? "border-red-500" : ""
+              }`}
               value={form.stock}
               onChange={(e) =>
                 setForm({ ...form, stock: Number(e.target.value) })
@@ -90,7 +108,12 @@ export default function AddProductDialog({ onClose, onSave }: Props) {
 
           <button
             onClick={() => onSave(form)}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            disabled={!isValid}
+            className={`px-4 py-2 text-white rounded ${
+              isValid
+                ? "bg-blue-600 hover:bg-blue-700"
+                : "bg-gray-400 cursor-not-allowed"
+            }`}
           >
             Add Product
           </button>
