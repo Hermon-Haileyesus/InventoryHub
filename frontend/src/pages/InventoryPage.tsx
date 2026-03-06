@@ -54,9 +54,31 @@ export default function InventoryPage() {
         p.category.toLowerCase().includes(q),
     );
   }, [state.products, search]);
+  if (state.loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3 text-gray-600">
+          <div className="h-8 w-8 border-4 border-gray-300 border-t-green-600 rounded-full animate-spin"></div>
+          <p className="text-sm font-medium">Loading inventory…</p>
+        </div>
+      </div>
+    );
+  }
 
-  if (state.loading) return <p className="p-6">Loading...</p>;
-  if (state.error) return <p className="p-6 text-red-500">{state.error}</p>;
+  if (state.loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="flex items-center gap-2 text-gray-700 text-lg font-medium">
+          <span>Loading inventory</span>
+          <span className="flex gap-1">
+            <span className="animate-bounce">.</span>
+            <span className="animate-bounce delay-150">.</span>
+            <span className="animate-bounce delay-300">.</span>
+          </span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -72,7 +94,7 @@ export default function InventoryPage() {
         </p>
 
         <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between mb-6 gap-3">
-          <div className="relative w-full sm:max-w-sm order-2 sm:order-1">
+          <div className="relative w-full sm:max-w-sm  sm:order-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
@@ -85,7 +107,7 @@ export default function InventoryPage() {
 
           <button
             onClick={() => setAdding(true)}
-            className="order-1 sm:order-2 w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+            className=" sm:order-2 w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
           >
             <Plus className="h-4 w-4" />
             Add Product
