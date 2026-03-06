@@ -7,6 +7,7 @@ interface DropdownMenuProps {
 
 export default function DropdownMenu({ onEdit, onDelete }: DropdownMenuProps) {
   const [open, setOpen] = useState(false);
+  const [openUp, setOpenUp] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -19,17 +20,34 @@ export default function DropdownMenu({ onEdit, onDelete }: DropdownMenuProps) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  function toggleMenu() {
+    if (!ref.current) return;
+
+    const rect = ref.current.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+
+    // If less than 150px below → open upward
+    setOpenUp(spaceBelow < 150);
+
+    setOpen(!open);
+  }
+
   return (
     <div className="relative inline-block text-left" ref={ref}>
       <button
-        onClick={() => setOpen(!open)}
+        onClick={toggleMenu}
         className="px-2 py-1 rounded hover:bg-gray-200"
       >
         ⋮
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-28 bg-white border rounded shadow z-10">
+        <div
+          className={`absolute w-28 bg-white border rounded shadow z-10
+            ${openUp ? "bottom-full mb-2" : "top-full mt-2"} 
+            right-0
+          `}
+        >
           <button
             onClick={() => {
               setOpen(false);
