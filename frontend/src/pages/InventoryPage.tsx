@@ -2,9 +2,10 @@ import { useReducer, useEffect, useState, useMemo } from "react";
 import InventoryTable from "../components/InventoryTable";
 import { inventoryReducer } from "../state/inventoryReducer";
 import EditProductDialog from "../components/EditProdudctionDialog";
-import type { Product } from "../types/Products";
 import DeleteProductDialog from "../components/DeleteProductionDialog";
 import AddProductDialog from "../components/AddProductionDialog";
+import type { Product } from "../types/Products";
+import { Search, Package, Plus } from "lucide-react";
 
 export default function InventoryPage() {
   const [search, setSearch] = useState("");
@@ -60,31 +61,45 @@ export default function InventoryPage() {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-3xl font-bold mb-4">Inventory</h1>
-        <p className="text-sm text-muted-foreground">
+        <div className="flex items-center gap-2 mb-1">
+          <Package className="h-7 w-7 text-muted-foreground" />
+          <h1 className="text-3xl font-bold">Inventory</h1>
+        </div>
+
+        <p className="text-sm text-muted-foreground mb-6">
           {state.products.length} products ·{" "}
           {state.products.filter((p) => p.stock > 10).length} in stock
         </p>
 
-        <input
-          type="text"
-          placeholder="Search by name or category..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full max-w-sm mb-6 px-3 py-2 border rounded"
-        />
-        <button
-          onClick={() => setAdding(true)}
-          className="mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-        >
-          Add New Product
-        </button>
+        <div className="flex items-center justify-between mb-6">
+          <div className="relative w-full max-w-sm">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search by name or category..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-9 pr-3 py-2 border rounded"
+            />
+          </div>
 
+          <button
+            onClick={() => setAdding(true)}
+            className="ml-4 flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+          >
+            <Plus className="h-4 w-4" />
+            Add Product
+          </button>
+        </div>
+
+        {/* Table */}
         <InventoryTable
           products={filtered}
           onEdit={(p) => setEditingProduct(p)}
           onDelete={(id) => setDeletingId(id)}
         />
+
+        {/* Delete Dialog */}
         <DeleteProductDialog
           productId={deletingId}
           onClose={() => setDeletingId(null)}
@@ -95,6 +110,7 @@ export default function InventoryPage() {
           }}
         />
 
+        {/* Edit Dialog */}
         {editingProduct && (
           <EditProductDialog
             product={editingProduct}
@@ -105,6 +121,8 @@ export default function InventoryPage() {
             }}
           />
         )}
+
+        {/* Add Dialog */}
         {adding && (
           <AddProductDialog
             onClose={() => setAdding(false)}
